@@ -6,10 +6,11 @@
  */
 
 class Game {
-  constructor(height = 6, width = 7) {
+  constructor(player1, player2, height = 6, width = 7) {
     this.width = width;
     this.height = height;
-    this.currPlayer = 1;
+    this.players = [player1, player2];
+    this.currPlayer = player1;
     this.gameOver = false;
     this.makeBoard();
     this.makeHtmlBoard();
@@ -73,8 +74,8 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
     piece.style.top = -50 * (y + 2);
+    piece.style.backgroundColor = this.currPlayer.color;
 
     const spot = document.getElementById(`${y}-${x}`);
     spot.append(piece);
@@ -107,7 +108,7 @@ class Game {
 
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`${this.currPlayer.color} won!`);
     }
 
     // check for tie
@@ -116,7 +117,7 @@ class Game {
     }
 
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -150,11 +151,19 @@ class Game {
   }
 }
 
+class Player {
+  constructor(color) {
+    this.color = color;
+  }
+}
+
 // when the start button is clicked, the button is removed and a new Game object is created
 const startBtn = document.querySelector("#start-btn")
 startBtn.addEventListener('click', (e) => {
-  e.target.remove();
-  new Game(6, 7);
+  const player1 = new Player(document.querySelector('#p1-color').value);
+  const player2 = new Player(document.querySelector('#p2-color').value);
+  e.target.parentElement.remove();
+  new Game(player1, player2, 6, 7);
 })
 
 
