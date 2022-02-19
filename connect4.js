@@ -5,13 +5,12 @@
  * board fills (tie)
  */
 
-
 class Game {
   constructor(height = 6, width = 7) {
     this.width = width;
     this.height = height;
     this.currPlayer = 1;
-
+    this.gameOver = false;
     this.makeBoard();
     this.makeHtmlBoard();
   }
@@ -83,11 +82,16 @@ class Game {
 
   /** endGame: announce game end */
   endGame(msg) {
+    this.gameOver = true;
     alert(msg);
   }
 
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
+    // if game is over, do nothing
+    if (!!this.gameOver) { return; }
+
+
     // get x from ID of clicked cell
     const x = +evt.target.id;
 
@@ -143,8 +147,14 @@ class Game {
         }
       }
     }
-
   }
 }
 
-new Game(6, 7);
+// when the start button is clicked, the button is removed and a new Game object is created
+const startBtn = document.querySelector("#start-btn")
+startBtn.addEventListener('click', (e) => {
+  e.target.remove();
+  new Game(6, 7);
+})
+
+
